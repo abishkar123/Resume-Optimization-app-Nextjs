@@ -54,7 +54,8 @@ export default function Header() {
       toast.success(`Welcome, ${firebaseUser.displayName || 'User'}!`);
       closeSignupModal();
       router.push('/dashboard');
-    } catch {
+    } catch (err) {
+      console.error('Login error:', err);
       toast.error('Login failed. Please try again.');
     }
   };
@@ -67,7 +68,8 @@ export default function Header() {
       setUser(null);
       toast.info('You have been logged out.');
       router.push('/');
-    } catch {
+    } catch (err) {
+      console.error('Logout error:', err);
       toast.error('Logout failed. Please try again.');
     }
   };
