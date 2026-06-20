@@ -38,10 +38,18 @@ export default function Header() {
         photoURL: firebaseUser.photoURL,
         uid: firebaseUser.uid,
       };
+
+      // Exchange the Firebase ID token for a server-set httpOnly cookie.
+      // The token never touches localStorage; JS cannot read httpOnly cookies.
+      const sessionRes = await fetch('/api/v1/auth/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+      if (!sessionRes.ok) throw new Error('Session creation failed');
+
+      // Only non-sensitive display info is stored client-side.
       localStorage.setItem('userInfo', JSON.stringify(userInfo));
-      localStorage.setItem('authToken', token);
-      // Firebase ID tokens expire after 1 hour — match cookie expiry to that.
-      document.cookie = `authToken=${token}; path=/; max-age=3600; SameSite=Lax`;
       setUser(userInfo);
       toast.success(`Welcome, ${firebaseUser.displayName || 'User'}!`);
       closeSignupModal();
@@ -54,9 +62,8 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       if (firebaseAuth) await logoutUser();
+      await fetch('/api/v1/auth/session', { method: 'DELETE' });
       localStorage.removeItem('userInfo');
-      localStorage.removeItem('authToken');
-      document.cookie = 'authToken=; path=/; max-age=0; SameSite=Lax';
       setUser(null);
       toast.info('You have been logged out.');
       router.push('/');

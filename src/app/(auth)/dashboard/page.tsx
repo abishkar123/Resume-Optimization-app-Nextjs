@@ -18,12 +18,7 @@ export default function DashboardPage() {
   useEffect(() => {
     async function fetchResumes() {
       try {
-        const token = localStorage.getItem('authToken');
-        if (!token) { setError('Not authenticated'); return; }
-
-        const res = await fetch('/api/resume', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch('/api/v1/resume');
 
         const json = await res.json();
         if (!res.ok || !json.success) {

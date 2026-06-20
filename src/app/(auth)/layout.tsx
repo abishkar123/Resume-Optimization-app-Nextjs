@@ -8,8 +8,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
+    // userInfo is non-sensitive display data — the real auth guard is the
+    // httpOnly session cookie checked by middleware and route handlers.
+    const userInfo = localStorage.getItem('userInfo');
+    if (!userInfo) {
       router.push('/?auth=login');
     } else {
       setReady(true);

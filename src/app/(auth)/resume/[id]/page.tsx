@@ -36,8 +36,6 @@ interface OptimizeEnvelope {
   jobDescriptions: string[];
 }
 
-const token = () => localStorage.getItem('authToken') ?? '';
-
 export default function ResumeDetailPage() {
   const params = useParams<{ id: string }>();
   const resumeId = params.id;
@@ -56,9 +54,7 @@ export default function ResumeDetailPage() {
   useEffect(() => {
     async function fetchResume() {
       try {
-        const res = await fetch(`/api/resume/${resumeId}`, {
-          headers: { Authorization: `Bearer ${token()}` },
-        });
+        const res = await fetch(`/api/v1/resume/${resumeId}`);
         const json = await res.json();
         if (!res.ok || !json.success) {
           throw new Error(json.error ?? 'Failed to load resume');
@@ -85,12 +81,9 @@ export default function ResumeDetailPage() {
     setResult(null);
 
     try {
-      const res = await fetch('/api/optimize', {
+      const res = await fetch('/api/v1/optimize', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token()}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           resumeId,
           targetRole: targetRole.trim() || undefined,

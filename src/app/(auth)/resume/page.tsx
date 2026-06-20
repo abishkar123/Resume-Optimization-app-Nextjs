@@ -14,8 +14,6 @@ export default function ResumeUploadPage() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
-  const getToken = () => localStorage.getItem('authToken') ?? '';
-
   const handleFileChange = (selected: File) => {
     setError('');
     const validTypes = [
@@ -51,9 +49,8 @@ export default function ResumeUploadPage() {
         setUploadProgress((p) => Math.min(p + 10, 90));
       }, 150);
 
-      const res = await fetch('/api/upload', {
+      const res = await fetch('/api/v1/upload', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${getToken()}` },
         body: formData,
       });
 

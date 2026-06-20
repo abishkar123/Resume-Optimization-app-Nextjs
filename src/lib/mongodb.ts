@@ -30,7 +30,8 @@ export async function connectDB() {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
-    throw e;
+    const msg = e instanceof Error ? e.message : String(e);
+    throw new Error(`Database connection failed: ${msg}`);
   }
 
   return cached.conn;
