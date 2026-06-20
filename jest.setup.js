@@ -8,7 +8,7 @@ import '@testing-library/jest-dom';
 
 // Mock window.matchMedia — not implemented in jsdom but required by many
 // UI libraries and responsive hooks.
-Object.defineProperty(window, 'matchMedia', {
+if (typeof window !== 'undefined') Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation((query) => ({
     matches: false,
