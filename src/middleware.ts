@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 //   3. Redirecting unauthenticated page navigations to /login
 
 const PUBLIC_PAGE_ROUTES = ['/'];
-const PUBLIC_API_ROUTES = ['/api/health', '/api/auth/verify'];
+const PUBLIC_API_ROUTES = ['/api/v1/health', '/api/v1/auth/verify', '/api/v1/auth/session'];
 
 function isPublic(pathname: string) {
   if (PUBLIC_API_ROUTES.includes(pathname)) return true;
@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
 
   const isApiRoute = pathname.startsWith('/api/');
   const hasHeaderAuth = !!request.headers.get('authorization');
-  const hasCookieAuth = !!request.cookies.get('authToken')?.value;
+  const hasCookieAuth = !!request.cookies.get('session')?.value;
 
   if (!hasHeaderAuth && !hasCookieAuth) {
     if (isApiRoute) {

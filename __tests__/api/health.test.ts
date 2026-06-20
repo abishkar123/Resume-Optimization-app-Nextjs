@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { GET } from '@/app/api/health/route';
+import { GET } from '@/app/api/v1/health/route';
 
 describe('GET /api/health', () => {
   it('returns status 200', async () => {

@@ -91,7 +91,8 @@ export async function POST(req: NextRequest): Promise<Response> {
   try {
     await uploadToS3(s3Key, file.buffer, resolvedMime);
   } catch (err) {
-    console.error('S3 upload error:', err);
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('[POST /api/v1/upload] S3 upload error:', msg);
     return serverErrorResponse('Failed to upload file to storage');
   }
 
@@ -118,7 +119,8 @@ export async function POST(req: NextRequest): Promise<Response> {
       uploadedAt: new Date(),
     });
   } catch (err) {
-    console.error('MongoDB error:', err);
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('[POST /api/v1/upload] MongoDB error:', msg);
     return serverErrorResponse('Failed to save resume record');
   }
 

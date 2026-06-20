@@ -22,13 +22,18 @@ export async function getUserIdFromRequest(): Promise<string | null> {
   return verifyFirebaseToken(token);
 }
 
-// For use in Route Handlers — verifies the Bearer token directly from NextRequest
-// instead of trusting the x-user-id header set by middleware (defense in depth).
+// For use in Route Handlers — checks Bearer header first, then falls back to the
+// httpOnly session cookie set by POST /api/auth/session.
 export async function getAuthenticatedUserId(request: NextRequest): Promise<string | null> {
   const authHeader = request.headers.get('authorization');
-  if (!authHeader?.startsWith('Bearer ')) return null;
-  const token = authHeader.slice(7);
-  return verifyFirebaseToken(token);
+  if (authHeader?.startsWith('Bearer ')) {
+    return verifyFirebaseToken(authHeader.slice(7));
+  }
+  const sessionToken = request.cookies.get('session')?.value;
+  if (sessionToken) {
+    return verifyFirebaseToken(sessionToken);
+  }
+  return null;
 }
 
 export function createAuthError(message: string) {

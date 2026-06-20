@@ -27,7 +27,8 @@ export async function GET(request: NextRequest) {
 
     return successResponse(resumes);
   } catch (error) {
-    console.error('[GET /api/resume] Error fetching resumes:', error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[GET /api/resume] Error fetching resumes:', msg);
     return errorResponse('Failed to fetch resumes', 500);
   }
 }
@@ -64,7 +65,8 @@ export async function POST(request: NextRequest) {
 
     return successResponse(resume, 201);
   } catch (error) {
-    console.error('[POST /api/resume] Error creating resume:', error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[POST /api/resume] Error creating resume:', msg);
     return errorResponse('Failed to create resume', 500);
   }
 }
